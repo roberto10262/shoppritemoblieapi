@@ -1,0 +1,22 @@
+GET http://localhost:5000/
+
+###
+
+POST  http://localhost:5000/
+Content-Type: "application/json"
+
+{
+    "name":"Anomander Rake",
+    "username":"Anomandaris",
+    "password":"someting stupid",
+    "role":"ADMIN"    
+}
+
+###
+
+POST  http://localhost:5000/password 
+Content-Type: "application/json"
+
+{
+    "password":"helloSweety"
+}
