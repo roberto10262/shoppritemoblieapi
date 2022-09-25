@@ -12,7 +12,6 @@ specifiers:
   concurrently: ^7.4.0
   dotenv: ^16.0.1
   express: ^4.18.1
-  install: ^0.13.0
   jsonwebtoken: ^8.5.1
   nodemon: ^2.0.20
   prisma: ^4.3.1
@@ -25,9 +24,7 @@ dependencies:
   body-parser: 1.20.0
   dotenv: 16.0.1
   express: 4.18.1
-  install: 0.13.0
   jsonwebtoken: 8.5.1
-  prisma: 4.3.1
   yup: 0.32.11
 
 devDependencies:
@@ -38,6 +35,7 @@ devDependencies:
   '@types/node': 18.7.19
   concurrently: 7.4.0
   nodemon: 2.0.20
+  prisma: 4.3.1
   typescript: 4.8.3
 
 packages:
@@ -88,7 +86,6 @@ packages:
   /@prisma/engines/4.3.1:
     resolution: {integrity: sha512-4JF/uMaEDAPdcdZNOrnzE3BvrbGpjgV0FcPT3EVoi6I86fWkloqqxBt+KcK/+fIRR0Pxj66uGR9wVH8U1Y13JA==}
     requiresBuild: true
-    dev: false
 
   /@types/bcrypt/5.0.0:
     resolution: {integrity: sha512-agtcFKaruL8TmcvqbndlqHPSJgsolhf/qPWchFlgnW1gECTN/nKbFcoFnvKAQRFfKbh+BO6A3SWdJu9t+xF3Lw==}
@@ -684,11 +681,6 @@ packages:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: false
 
-  /install/0.13.0:
-    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
-    engines: {node: '>= 0.10'}
-    dev: false
-
   /ipaddr.js/1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
@@ -990,7 +982,6 @@ packages:
     requiresBuild: true
     dependencies:
       '@prisma/engines': 4.3.1
-    dev: false
 
   /property-expr/2.0.5:
     resolution: {integrity: sha512-IJUkICM5dP5znhCckHSv30Q4b5/JA5enCtkRHYaOVOAocnH/1BQEYTC5NMfT3AVl/iXKdr3aqQbQn9DxyWknwA==}
