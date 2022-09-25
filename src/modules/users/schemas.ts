@@ -1,6 +1,7 @@
 import validator from "../../lib/validator";
 import { Role } from "@prisma/client";
-export const newUserSchema = validator.object().shape({
+import { StringDecoder } from "string_decoder";
+const newUserSchema = validator.object().shape({
   username: validator
     .string()
     .required()
@@ -19,3 +20,25 @@ export const newUserSchema = validator.object().shape({
     .oneOf([Role.ADMIN, Role.MANAGER, Role.WORKER])
     .required(),
 });
+
+const loginSchema = validator.object().shape({
+  username: validator
+    .string()
+    .required()
+    .min(5, "Very short, username must be at least 5 characters long"),
+  password: validator
+    .string()
+    .required()
+    .min(8, "password must be at least 8 characters long"),
+});
+
+interface Icredentials {
+  token: string;
+  userData: {
+    username: string;
+    name: string;
+    role: Role;
+  };
+}
+
+export { newUserSchema, loginSchema, Icredentials };

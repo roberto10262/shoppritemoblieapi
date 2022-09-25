@@ -12,21 +12,15 @@ interface InewUserSchema {
 }
 
 const createUser = async (userData: any) => {
-  let validData: InewUserSchema;
-  try {
-    validData = await validateData(Schema, userData);
-  } catch (err) {
-    let error = err as AppError;
-    throw new AppError(error.message);
-  }
+  const validData: InewUserSchema = await validateData(Schema, userData);
 
   const prisma = new PrismaClient();
   const exists = await prisma.user.findUnique({
     where: { username: validData.username },
   });
-  
-  if(exists){
-    throw new AppError("user already exists try another username!")
+
+  if (exists) {
+    throw new AppError("user already exists try another username!");
   }
 
   const newUser = await prisma.user.create({
@@ -37,7 +31,7 @@ const createUser = async (userData: any) => {
       role: validData.role,
     },
   });
-  return newUser
+  return newUser;
 };
 
 export { createUser };

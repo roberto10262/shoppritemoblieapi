@@ -1,17 +1,16 @@
 import * as validator from "yup";
 import { AppError } from "../error/AppError";
 
-export const validateData = async (
+export const validateData = async <DataInterface>(
   schema: validator.AnyObjectSchema,
-  data: any,
+  data: DataInterface
 ) => {
-  try {
-    let validData = await schema.validate(data, { abortEarly: false });
-    return validData
-  } catch (error) {
-    let err = error as validator.ValidationError;
-    throw new AppError(`${err.errors}`);
-  }
+  const validData = (await schema.validate(data, {
+    abortEarly: false,
+  })) as DataInterface;
+  
+  if (validData) return validData;
+  return
 };
 
 export default validator;
