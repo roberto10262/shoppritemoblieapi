@@ -1,17 +1,17 @@
-import express, {
-  Express
-} from "express";
-
+import express, { Express } from "express";
 const app: Express = express();
 import errorHandler from "./middlewares/globalErrorHandler";
-import { productRouter } from "./modules/products/routes";
-import { userRouter } from "./modules/users/routes";
+import * as api from "./modules/api";
 
+//Body Parser middleware
 app.use(express.json());
-app.use(productRouter)
 
+//Api Routes
+app.use(api.productRouter);
+app.use(api.userRouter);
+app.use(api.stockRouter)
 
-
-app.use(errorHandler)
+//Error Handler
+app.use(errorHandler);
 
 export default app;

@@ -1,8 +1,16 @@
 import validator from "../../lib/validator";
 import { Product } from "@prisma/client";
 const newProductSchema = validator.object().shape({
-    name: validator.string().required(),
-    price: validator.number().required(),
-})
+  name: validator.string().required(),
+  price: validator.number().required(),
+}).noUnknown(true);
 
-export {newProductSchema}
+const updateProductSchema = validator
+  .object()
+  .shape({
+    name: validator.string().notRequired(),
+    price: validator.number(),
+    active: validator.boolean(),
+  }).noUnknown(true);
+
+export { newProductSchema, updateProductSchema };

@@ -1,10 +1,9 @@
-import { create } from "domain";
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../../error/AppError";
-import { validateData } from "../../lib/validator";
+import { parseId } from "../utils/urlUtils";
 import { createProduct } from "./create";
-import { newProductSchema } from "./schema";
-import { InewProduct } from "./types";
+import { deleteProduct } from "./delete";
+import { getAllProducts, getProductById } from "./getProducts";
+import { updateProduct } from "./update";
 
 const createController = async (
   request: Request,
@@ -12,11 +11,86 @@ const createController = async (
   next: NextFunction
 ) => {
   try {
-    const product = await createProduct(request.body)
+    const product = await createProduct(request.body);
     response.json(product);
   } catch (error) {
-      next(error)
+    next(error);
   }
 };
 
-export { createController };
+const updateController = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  const { id } = request.params;
+
+  try {
+    const parsedId = parseId(id);
+    if (parsedId) {
+      const product = await updateProduct(request.body, parsedId);
+      response.json(product);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+const deleteController = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  const { id } = request.params;
+
+  try {
+    const parsedId = parseId(id);
+    if (parsedId) {
+      const product = await deleteProduct(parsedId);
+
+      response.status(201).json({ message: "record deleted" });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const allProductsController = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const products = await getAllProducts();
+    response.json({ products: products });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getByIdController = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  const { id } = request.params;
+
+  try {
+    const parsedId = parseId(id);
+    if (parsedId) {
+      const product = await getProductById(parsedId);
+      if (!product) response.status(404).json(null);
+
+      response.status(200).json(product);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  createController,
+  updateController,
+  deleteController,
+  allProductsController,
+  getByIdController,
+};
