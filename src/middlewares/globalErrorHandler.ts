@@ -1,4 +1,3 @@
-import { prisma, PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import { ValidationError } from "yup";
