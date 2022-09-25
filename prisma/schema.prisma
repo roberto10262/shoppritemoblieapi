@@ -15,9 +15,34 @@ model User {
   username  String   @unique
   name      String
   password  String
+  active    Boolean  @default(true)
   createdAt DateTime @default(now())
   role      Role     @default(WORKER)
-  
+}
+
+model Product {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  price  Float
+  active Boolean @default(true)
+  Sales  Sales[]
+  Stock  Stock?
+}
+
+model Sales {
+  id         Int      @id @default(autoincrement())
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int      @unique
+  quantity   Int
+  totalPrice Float
+  soldAt     DateTime @default(now())
+}
+
+model Stock {
+  id                Int     @id @default(autoincrement())
+  product           Product @relation(fields: [productId], references: [id])
+  availableQuantity Int
+  productId         Int     @unique
 }
 
 enum Role {
