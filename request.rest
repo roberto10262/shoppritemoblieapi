@@ -1,0 +1,33 @@
+GET http://localhost:5000/
+###
+//PRODUCTS
+GET http://localhost:5000/products
+
+###
+POST http://localhost:5000/products
+Content-Type: application/json
+Authorization: Bearer {{$processEnv token}}
+
+{
+    "name":"Top Score 1kg",
+    "price":70
+}
+
+
+
+
+
+//SALES
+###
+POST http://localhost:5000/sales
+content-type: application/json
+
+{
+    "quantity":1,
+    "productId":1
+}
+
+####
+
+
+

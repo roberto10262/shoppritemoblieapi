@@ -29,6 +29,7 @@ const loginController: Handler = async (
   response: Response,
   next: NextFunction
 ) => {
+  
   try {
     const user = await login(request.body);
     
@@ -45,8 +46,9 @@ async function getCredentials<Icredentials>(userData: {
   name: string;
   role: Role;
 }) {
-  return await {
-    token: await generateToken({
+  
+  return  {
+    token:  generateToken({
       username: userData.username,
       role: userData.role,
     }),

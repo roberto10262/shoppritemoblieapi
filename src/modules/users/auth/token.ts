@@ -2,19 +2,23 @@ import jwt from "jsonwebtoken";
 import { AppError } from "../../../error/AppError";
 import { Icredentials } from "../schemas";
 
-const { JWT_SECRET } = process.env;
-const secret = JWT_SECRET ? JWT_SECRET : "";
+
+const getSecret = () => {
+  const { JWT_SECRET } = process.env;
+  if(!JWT_SECRET)throw new AppError("secret undefined", 500)
+  return JWT_SECRET
+};
 
 const generateToken = (userData: { username: string; role: string }) => {
-  const token = jwt.sign({ userData }, secret, { expiresIn: "12h" });
-
+  const token = jwt.sign({ userData }, getSecret(), { expiresIn: "12h" });
+  
   return token;
 };
 
-const verifyToken =  (token: string): Icredentials => {
-  let verifiedToken
+const verifyToken = (token: string): Icredentials => {
+  let verifiedToken;
   try {
-    verifiedToken = jwt.verify(token, secret) as Icredentials;
+    verifiedToken = jwt.verify(token, getSecret()) as Icredentials;
   } catch (error) {
     throw new AppError("unauthorized", 401);
   }

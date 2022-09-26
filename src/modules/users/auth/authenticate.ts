@@ -7,13 +7,14 @@ const authenticate =
   (options: Role[]) =>
   (request: Request, response: Response, next: NextFunction) => {
     const authorization = request.headers.authorization;
-    if (!authorization) throw new AppError("Unauthorized", 401)
 
-    const {userData} = verifyToken(getToken(authorization));
-    if(!options.find(role => role === userData.role))
-      throw new AppError("Unauthorized", 401)
-    
-      next()
+    if (!authorization) throw new AppError("Unauthorized", 401);
+
+    const { userData } = verifyToken(getToken(authorization));
+    if (!options.find((role) => role === userData.role))
+      throw new AppError("Unauthorized", 401);
+
+    next();
   };
 
 export { authenticate };

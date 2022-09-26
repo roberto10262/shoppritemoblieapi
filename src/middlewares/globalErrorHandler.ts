@@ -26,7 +26,10 @@ const errorHanlder: ErrorRequestHandler = (
       response.status(404).json({ error: "record not found" });
     if (err.code === PRISMA_ERROR_CODES.foreignKeyConstraintError)
       response.status(404).json({ error: "check relation record existence" });
+      console.log("known err",err)
   }
+ 
+  response.json(err)
 };
 
 export default errorHanlder;
