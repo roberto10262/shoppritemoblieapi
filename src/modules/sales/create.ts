@@ -1,10 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma, Sales } from "@prisma/client";
 import { AppError } from "../../error/AppError";
 import { sellSChema } from "./schemas";
 
 const sellProduct = async (data: any) => {
-  
-    const validData = await sellSChema.validate(data, { abortEarly: false });
+  const validData = await sellSChema.validate(data, { abortEarly: false });
 
   if (!validData) return;
 
@@ -14,6 +13,11 @@ const sellProduct = async (data: any) => {
   });
   if (!stock || stock.availableQuantity <= validData.quantity)
     throw new AppError("Insuficient or Unavailable Stock");
+
+  const product = await prisma.product.findUnique({
+    where: { id: validData.productId },
+  });
+  await prisma.sales.create({ data: { ...validData } });
 
   return await prisma.stock.update({
     where: { id: stock.id },

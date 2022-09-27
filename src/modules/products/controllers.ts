@@ -1,11 +1,7 @@
-import { Console } from "console";
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../../error/AppError";
 import { parseId } from "../utils/urlUtils";
-import { createProduct } from "./create";
-import { deleteProduct } from "./delete";
-import { getAllProducts, getProductById } from "./getProducts";
-import { updateProduct } from "./update";
+import { newProductSchema, updateProductSchema } from "./schema";
+import * as services from "./services";
 
 const createController = async (
   request: Request,
@@ -13,7 +9,9 @@ const createController = async (
   next: NextFunction
 ) => {
   try {
-    const product = await createProduct(request.body);
+    const product = await services.create_Product(
+      await newProductSchema.validate(request.body, { abortEarly: false })
+    );
     response.json(product);
   } catch (error) {
     next(error);
@@ -28,11 +26,11 @@ const updateController = async (
   const { id } = request.params;
 
   try {
-    const parsedId = parseId(id);
-    if (parsedId) {
-      const product = await updateProduct(request.body, parsedId);
-      response.json(product);
-    }
+    const product = await services.update_Product(
+      parseId(id),
+      updateProductSchema.validateSync(request.body)
+    );
+    response.json(product);
   } catch (error) {
     next(error);
   }
@@ -45,12 +43,8 @@ const deleteController = async (
   const { id } = request.params;
 
   try {
-    const parsedId = parseId(id);
-    if (parsedId) {
-      const product = await deleteProduct(parsedId);
-
-      response.status(201).json({ message: "record deleted" });
-    }
+    const product = await services.delete_Product(parseId(id));
+    response.status(201).json({ message: "record deleted" });
   } catch (error) {
     next(error);
   }
@@ -62,7 +56,7 @@ const allProductsController = async (
   next: NextFunction
 ) => {
   try {
-    const products = await getAllProducts();
+    const products = await services.get_Products();
     response.json({ products: products });
   } catch (error) {
     next(error);
@@ -77,14 +71,8 @@ const getByIdController = async (
   const { id } = request.params;
 
   try {
-    const parsedId = parseId(id);
-    if (parsedId) {
-      const product = await getProductById(parsedId);
-      
-      if (product===null) throw new AppError("record not found", 404)
-
-      response.status(200).json(product)
-    }
+    const product = await services.get_One_Product(parseId(id));
+    response.status(200).json(product);
   } catch (error) {
     next(error);
   }

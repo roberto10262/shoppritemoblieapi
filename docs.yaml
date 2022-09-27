@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info:
+  title: Shopping Api
+  version: 1.0.0
+  description: A api to manage sales and stock
+  contact:
+    name: Roberto Raúl Domingos
+    url: roberto.vercel.app
+    email: robdomingos@outlook.com
+  license:
+    name: mit
+servers: 
+  - url: https://shoppapi.fly.dev 
+security: 
+  -  bearerAuth: []
+paths: 
+  /login:
+    get: 
+      responses: 
+        200: 
+          content: 
+            token: 
+              example: askalsaslajls
+          description: kskalsal    
+      summary: get user data
+      operationId: logi
+      
+
+components: 
+  securitySchemes: 
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http

@@ -1,17 +1,18 @@
 import { NextFunction, Request, Response } from "express";
-import validator from "../../lib/validator";
 import { parseId } from "../utils/urlUtils";
 import { createStock } from "./create";
-import { updateStockSchema } from "./schemas";
+import { createStockSchema, updateStockSchema } from "./schemas";
 import { updateStock } from "./update";
-
+import * as services from "./services";
 const createStockController = async (
   request: Request,
   response: Response,
   next: NextFunction
 ) => {
   try {
-    const stock = await createStock(request.body);
+    const stock = await services.create_Stock(
+      createStockSchema.validateSync(request.body)
+    );
     response.status(201).json(stock);
   } catch (error) {
     next(error);
@@ -23,18 +24,15 @@ const updateStockController = async (
   response: Response,
   next: NextFunction
 ) => {
+  const { id } = request.params;
   try {
-    const quantity = await updateStockSchema.validate(request.body, {
-      abortEarly: false,
-    });
-    console.log(quantity)
-    const parsedId = parseId(request.params.id);
-
-    if (!quantity || !parsedId) return;
-   const stock= await updateStock(quantity.availableQuantity, parsedId);
-    response.json(stock)
-} catch (error) {
-      next(error)
+    const stock = await services.update_Stock(
+      updateStockSchema.validateSync(request.body).availableQuantity,
+      parseId(id)
+    );
+    response.json(stock);
+  } catch (error) {
+    next(error);
   }
 };
 

@@ -4,7 +4,7 @@ GET http://localhost:5000/
 GET http://localhost:5000/products
 
 ###
-GET http://localhost:5000/products/4
+GET http://localhost:5000/products/6
 
 ###
 POST http://localhost:5000/products
@@ -12,24 +12,53 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv token}}
 
 {
-    "name":"Top Score 1kg",
-    "price":70
+    "name":"Fanta 1L",
+    "price":75
 }
 
 ###
-DELETE  http://localhost:5000/products/3
+PATCH  http://localhost:5000/products/5
+Content-Type: application/json
 Authorization: Bearer {{$dotenv token}}
 
+{
+    "price":80
+}
+###
+DELETE  http://localhost:5000/products/5
+Authorization: Bearer {{$dotenv token}}
+
+//STOCK
+####
+POST http://localhost:5000/stock/
+Content-Type: application/json
+Authorization: Bearer {{$dotenv token}}
+
+{   
+    "productId":6,
+    "availableQuantity":20
+}
+
+###
+PATCH  http://localhost:5000/stock/4
+Content-Type: application/json
+Authorization: Bearer {{$dotenv token}}
+
+{   
+    "availableQuantity":20
+}
 
 
 //SALES
+###
+GET http://localhost:5000/sales
 ###
 POST http://localhost:5000/sales
 content-type: application/json
 
 {
     "quantity":1,
-    "productId":1
+    "productId":4, "totalPrice":4000
 }
 
 ####

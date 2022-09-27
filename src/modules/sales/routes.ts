@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { IprotectedRoute } from "../users/auth/protectedRoutes";
-import { sellController } from "./controller";
+import { authenticate } from "../users/auth/authenticate";
+import * as controller from "./controller";
 
-// const protected:IprotectedRoute={
-//     path:""
-// }
+const salesRouter = Router();
 
-const salesRouter = Router()
+salesRouter
+  .route("/sales")
+  .all(authenticate(["MANAGER", "ADMIN", "WORKER"]))
+  .get(controller.allSalesController)
+  .post(controller.sellController);
 
-salesRouter.post("/sales", sellController)
-
-export {salesRouter}
+export { salesRouter };
