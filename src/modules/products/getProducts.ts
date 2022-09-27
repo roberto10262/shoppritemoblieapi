@@ -9,7 +9,7 @@ const getProductById = async (id: number) => {
   const prisma = new PrismaClient();
   return await prisma.product.findUnique({
     where: { id },
-    include: { Stock: true },
+    include: { Stock: true}
   });
 };
 

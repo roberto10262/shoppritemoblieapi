@@ -4,16 +4,21 @@ GET http://localhost:5000/
 GET http://localhost:5000/products
 
 ###
+GET http://localhost:5000/products/4
+
+###
 POST http://localhost:5000/products
 Content-Type: application/json
-Authorization: Bearer {{$processEnv token}}
+Authorization: Bearer {{$dotenv token}}
 
 {
     "name":"Top Score 1kg",
     "price":70
 }
 
-
+###
+DELETE  http://localhost:5000/products/3
+Authorization: Bearer {{$dotenv token}}
 
 
 
@@ -28,6 +33,12 @@ content-type: application/json
 }
 
 ####
+POST http://localhost:5000/login HTTP/1.1
+Content-Type: application/json
 
+{
+    "username": "{{$dotenv username}}",
+    "password": "{{$dotenv password}}"
+}
 
 

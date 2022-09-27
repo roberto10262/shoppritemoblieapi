@@ -29,7 +29,7 @@ const errorHanlder: ErrorRequestHandler = (
       console.log("known err",err)
   }
  
-  response.json(err)
+  console.log(err)
 };
 
 export default errorHanlder;

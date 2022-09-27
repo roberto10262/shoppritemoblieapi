@@ -1,4 +1,6 @@
+import { Console } from "console";
 import { NextFunction, Request, Response } from "express";
+import { AppError } from "../../error/AppError";
 import { parseId } from "../utils/urlUtils";
 import { createProduct } from "./create";
 import { deleteProduct } from "./delete";
@@ -78,9 +80,10 @@ const getByIdController = async (
     const parsedId = parseId(id);
     if (parsedId) {
       const product = await getProductById(parsedId);
-      if (!product) response.status(404).json(null);
+      
+      if (product===null) throw new AppError("record not found", 404)
 
-      response.status(200).json(product);
+      response.status(200).json(product)
     }
   } catch (error) {
     next(error);
