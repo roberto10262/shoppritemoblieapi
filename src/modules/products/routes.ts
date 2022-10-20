@@ -9,14 +9,12 @@ productRouter
   .get(controller.allProductsController)
   .post(authenticate(["ADMIN", "MANAGER"]), controller.createController);
 
-
-  productRouter
+productRouter
   .route("/products/:id")
   .get(controller.getByIdController)
-  .all(authenticate(["ADMIN"]))
+  .all(authenticate(["ADMIN", "MANAGER"]))
   .patch(controller.updateController)
   .delete(controller.deleteController);
-productRouter.route("/products");
 
 
 export { productRouter };

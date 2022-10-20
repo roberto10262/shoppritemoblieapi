@@ -5,7 +5,6 @@ const sellSChema = validator
   .shape({
     productId: validator.number().required(),
     quantity: validator.number().required().min(1),
-    totalPrice: validator.number().required(),
   })
   .noUnknown(true);
 

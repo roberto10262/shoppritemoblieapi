@@ -62,12 +62,12 @@ content-type: application/json
 }
 
 ####
-POST http://localhost:5000/login HTTP/1.1
+POST https://shoppapi.fly.dev/login HTTP/1.1
 Content-Type: application/json
 
 {
     "username": "{{$dotenv username}}",
-    "password": "{{$dotenv password}}"
+    "password": "raul10262"
 }
 
 

@@ -4,9 +4,9 @@ info:
   version: 1.0.0
   description: A api to manage sales and stock
   contact:
-    name: Roberto Raúl Domingos
-    url: roberto.vercel.app
-    email: robdomingos@outlook.com
+    name: Miguel
+    url: n/a
+    email: miguelofficial@gmail.com
   license:
     name: mit
 servers: 
@@ -15,20 +15,468 @@ security:
   -  bearerAuth: []
 paths: 
   /login:
-    get: 
+    post:
+      operationId: authenticate
+      security: []
+      tags: 
+        -  AUTH
+      summary: get user access token and credentials
+      requestBody: 
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/loginSchema"
+         
+      responses:
+        "200": 
+          description: User Credentials
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/userCredentials"
+        "400":
+          description: bad request
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/badRequestSchema" 
+          
+  /signup:
+    post:
+      security: 
+        -  bearerAuth: [ADMIN, MANAGER]
+      tags: 
+        -  USER
+      summary: create user
+      description: You must be an admin to use this endpoint
+      requestBody: 
+          description: create user
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+      responses: 
+        201: 
+          description: User Credentials
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/userCredentials"
+        400:
+          description: Bad Request
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/badRequestSchema"
+        401:
+          description: unautorized
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/unauthorizedSchema"
+
+  
+  /products:
+    get:
+      summary: get all Products 
+      tags: 
+        -  PRODUCT
       responses: 
         200: 
+          description: get all products
           content: 
-            token: 
-              example: askalsaslajls
-          description: kskalsal    
-      summary: get user data
-      operationId: logi
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  products:
+                    type: array 
+                    items: 
+                      $ref: "#/components/schemas/productSchema"
+    post: 
+      summary: post new product
+      security: 
+        -  bearerAuth: [MANAGER]
+      tags: 
+        -  PRODUCT
+      requestBody: 
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/newProductSchema"
+        
+      responses: 
+        201: 
+          description: created
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/productSchema"
+        400:
+          description: bad request
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/badRequestSchema"
+        401:
+          description: unauthorized
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/unauthorizedSchema"
+      
+  /products/:{id}:
+    parameters: 
+      - name: id
+        in: path
+        required: true
+        description: product id
+        schema: 
+          type: number
+          example: 1
+    get: 
+      summary: get single product
+      tags: 
+        -  PRODUCT
+      responses: 
+        200: 
+          description: record found
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/productSchema"
+      
+    patch: 
+      tags: 
+        -  PRODUCT
+      summary: update product
+      security: 
+        -  bearerAuth: [MANAGER]
+      requestBody: 
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/updateProductSchema"
+      responses: 
+        200: 
+          description: updated
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/productSchema"
+        400:
+          description: bad request
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/badRequestSchema"
+        401:
+          description: unauthorized
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/unauthorizedSchema"
+    delete: 
+      summary: delete product
+      tags: 
+        -  PRODUCT
+      security: 
+        -  bearerAuth: [MANAGER]
+      responses: 
+        204:
+          description: deleted
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/deletedSchema"
+        401:
+          description: unauthorized
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/unauthorizedSchema"
+          
+        404: 
+          description: not found
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/notFoundSchema"
+  /stock:
+    post: 
+      tags: 
+        -  STOCK
+      summary: add stock to product
+      security: 
+        -  bearerAuth: [MANAGER]
+      requestBody: 
+        content: 
+          application/json:
+            schema:
+              required: [availableQuantity, productId] 
+              type: object
+              properties: 
+                availableQuantity:
+                  type: integer
+                  minimum: 1
+                productId:
+                  type: integer
+                  example: 1
+      responses: 
+        201: 
+          description: stock added
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  availableQuantity:
+                    type: integer
+                    example: 0
+                  productId:
+                    type: integer
+                    example: 1
+  /stock/{id}:
+    parameters: 
+      - name: id
+        in: path
+        required: true
+        description: product id
+        schema: 
+          type: number
+          example: 1
+    patch: 
+      tags: 
+        -  STOCK
+      summary: update stock
+      responses: 
+        201: 
+          description: updated
+          content: 
+            application/json:
+              schema: 
+                properties: 
+                  availableQuantity:
+                    type: integer
+                    example: 8
+        401: 
+          description: unauthorized
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/unauthorizedSchema"      
+
+  /sales:
+    get: 
+      summary: sold products
+      tags: 
+        -  SALES
+      responses: 
+        200: 
+          description: get all sales
+          content: 
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: "#/components/schemas/soldProductSchema"
+      
+    post: 
+      tags: 
+        -  SALES
+      summary: sell product
+      requestBody: 
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/sellSchema"
+      responses: 
+        201: 
+          description: sold
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  availableQunatity:
+                    type: number
+                    example: 7
+                  productId:
+                    type: number
+                    example: 1   
       
 
 components: 
   securitySchemes: 
     bearerAuth:
-      bearerFormat: JWT
       scheme: bearer
       type: http
+  
+  schemas: 
+    User:
+      type: object
+      properties: 
+        id: 
+          type: integer
+          readOnly: true
+          description: User Id
+          example: 1
+        username:
+          type: string
+          description: username credential must be unique
+          uniqueItems: true
+          example: anomandaris
+        name:
+          type: string
+          description: user full name
+          example: Anomander Rake
+        password:
+          type: string
+          format: password
+          description: Password to authenticate user
+          writeOnly: true
+          minLength: 8
+          example: p@ssword
+        passwordVerify:
+          type: string
+          format: password
+          description: Password to authenticate user
+          writeOnly: true
+          minLength: 8
+          example: p@ssword
+        role:
+          allOf: 
+            -  $ref: "#/components/schemas/userRoles"
+        
+    userRoles:
+      type: string
+      enum: [ADMIN, MANAGER, WORKER]
+
+    userCredentials:
+      type: object
+      properties: 
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6..........
+        userData:
+          type: object
+          properties: 
+            username:
+              type: string
+              example: anomandaris
+            role:
+              $ref: "#/components/schemas/userRoles"
+    loginSchema:
+      type: object
+      properties:
+        username:
+          type: string
+          description: username credential must be unique
+          uniqueItems: true
+          example: anomandaris
+        password:
+          type: string
+          format: password
+          description: Password to authenticate user
+          writeOnly: true
+          minLength: 8
+          example: p@ssword
+    
+    badRequestSchema: 
+      type: object
+      properties: 
+        error:
+          type: string
+    notFoundSchema:
+      type: object
+      properties: 
+        error:
+          type: string
+          example: record not found
+    
+    unauthorizedSchema:
+      type: object
+      properties: 
+        error:
+          type: string
+          example: unauthorized
+        
+    newProductSchema: 
+      type: object
+      required: [name, price]
+      properties: 
+        name:
+          type: string
+          example: Coca Cola 1L
+        price: 
+          type: number
+          example: 54.5
+    updateProductSchema:
+      type: object
+      properties: 
+        name:
+          type: string
+          example: Fanta 1L
+        price:
+          type: number
+          example: 60.75
+        active: 
+          type: boolean
+          example: true
+    productSchema:
+      type: object
+      properties:
+        id:
+          type: number
+          readOnly: true
+          example: 1
+        name:
+          type: string
+          example: Coca Cola 1L
+        price:
+          type: number
+          example: 54.5
+        active:
+          type: boolean
+          example: true
+    deletedSchema:
+      type: object
+      properties: 
+        message:
+          type: string
+          example: record deleted
+
+    sellSchema:
+      type: object
+      properties: 
+        productId:
+          type: integer
+          example: 1
+        quantity:
+          type: integer
+          minimum: 1
+          example: 7
+    soldProductSchema:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        productId:
+          type: integer
+          example: 1
+        totalPrice:
+          type: number
+          example: 4000
+        soldAt:
+          type: string
+          example: 2022-09-27T11:40:44.708Z
+        product:
+          type: object
+          properties: 
+            name: 
+              type: string
+              example: Coca Cola 1L
+            price:
+              type: number
+              example: 60

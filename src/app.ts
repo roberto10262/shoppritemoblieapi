@@ -6,11 +6,27 @@ import express, {
   response,
   Response,
 } from "express";
-import { resolve } from "path";
-const app: Express = express();
+import cors from "cors";
 import errorHandler from "./middlewares/globalErrorHandler";
 import * as api from "./modules/api";
 
+const app: Express = express();
+
+const allowedOrigins = [
+  "capacitor://localhost",
+  "ionic://localhost",
+  "http://localhost",
+  "http://localhost:8080",
+  "http://localhost:8100",
+];
+
+const options: cors.CorsOptions = {
+  origin: true,
+  allowedHeaders: "Content-Type",
+  methods: ["POST", "PATCH", "GET", "DELETE", "OPTIONS"],
+};
+
+app.use(cors(options));
 //Body Parser middleware
 app.use(express.json());
 
@@ -21,7 +37,7 @@ app.use(express.json());
 app.use(api.productRouter);
 app.use(api.userRouter);
 app.use(api.stockRouter);
-app.use(api.salesRouter)
+app.use(api.salesRouter);
 //Error Handler
 app.use(errorHandler);
 

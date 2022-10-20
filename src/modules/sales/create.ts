@@ -14,10 +14,12 @@ const sellProduct = async (data: any) => {
   if (!stock || stock.availableQuantity <= validData.quantity)
     throw new AppError("Insuficient or Unavailable Stock");
 
-  const product = await prisma.product.findUnique({
+  const product = await prisma.product.findUniqueOrThrow({
     where: { id: validData.productId },
   });
-  await prisma.sales.create({ data: { ...validData } });
+  await prisma.sales.create({
+    data: { ...validData, totalPrice: product.price * validData.quantity },
+  });
 
   return await prisma.stock.update({
     where: { id: stock.id },

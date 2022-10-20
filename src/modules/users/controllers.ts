@@ -5,6 +5,7 @@ import { generateToken } from "./auth/token";
 import { createUser } from "./createUser";
 import { Icredentials } from "./schemas";
 
+
 const signupController: Handler = async (
   request: Request,
   response: Response,

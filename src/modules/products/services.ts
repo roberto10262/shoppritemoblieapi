@@ -12,17 +12,23 @@ const create_Product = async (new_product: InewProduct): Promise<Product> => {
   return await prisma.product.create({ data: new_product });
 };
 
-const get_Products = () => prisma.product.findMany();
+const get_Products = () =>
+  prisma.product.findMany({
+    include: { Stock: { select: { availableQuantity: true } } },
+  });
 
 const get_One_Product = async (id: number) =>
-  await prisma.product.findUniqueOrThrow({ where: { id } });
+  await prisma.product.findUniqueOrThrow({
+    where: { id },
+    include: { Stock: { select: { availableQuantity: true } } },
+  });
 
 const delete_Product = async (id: number) =>
   await prisma.product.delete({ where: { id } });
 
 const update_Product = async (id: number, input: IupdateProduct) => {
   const exists = await prisma.product.findUnique({ where: { id } });
-  
+
   if (!exists) throw new AppError(`no product with id ${id} found`);
 
   return await prisma.product.update({ where: { id }, data: input });
