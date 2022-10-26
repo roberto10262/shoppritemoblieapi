@@ -1,6 +1,7 @@
 interface InewProduct{
     name: string,
     price: number
+    categoryId:number
 }
 
 

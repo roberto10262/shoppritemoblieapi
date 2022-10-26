@@ -38,6 +38,7 @@ app.use(api.productRouter);
 app.use(api.userRouter);
 app.use(api.stockRouter);
 app.use(api.salesRouter);
+app.use(api.categoryRouter)
 //Error Handler
 app.use(errorHandler);
 

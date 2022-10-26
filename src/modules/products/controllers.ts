@@ -8,6 +8,7 @@ const createController = async (
   response: Response,
   next: NextFunction
 ) => {
+
   try {
     const product = await services.create_Product(
       await newProductSchema.validate(request.body, { abortEarly: false })

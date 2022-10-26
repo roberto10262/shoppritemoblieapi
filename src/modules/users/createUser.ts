@@ -22,6 +22,11 @@ const createUser = async (userData: any) => {
   if (exists) {
     throw new AppError("user already exists try another username!");
   }
+  if (validData.role === "ADMIN") {
+    const admin = await prisma.user.findFirst({ where: { role: "ADMIN" } });
+
+    if (admin) throw new AppError("there's already an admin in aplication");
+  }
 
   const newUser = await prisma.user.create({
     data: {

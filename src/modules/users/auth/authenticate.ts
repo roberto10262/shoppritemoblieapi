@@ -7,8 +7,7 @@ const authenticate =
   (options: Role[]) =>
   (request: Request, response: Response, next: NextFunction) => {
     const authorization = request.headers.authorization;
-
-    if (!authorization) throw new AppError("Unauthorized", 401);
+    if (!authorization) throw new AppError("Unauthorized! authorization required...", 401);
 
     const { userData } = verifyToken(getToken(authorization));
     if (!options.find((role) => role === userData.role))

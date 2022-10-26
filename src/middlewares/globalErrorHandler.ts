@@ -15,10 +15,10 @@ const errorHanlder: ErrorRequestHandler = (
 ) => {
   if (err instanceof AppError)
     response.status(err.statusCode).json({ error: err.message });
-  if (err instanceof ValidationError) response.json({ error: err.errors });
+  if (err instanceof ValidationError) response.status(400).json({ error: err.errors });
   if (err instanceof PrismaClientKnownRequestError) {
     if (err.code === PRISMA_ERROR_CODES.uniqueConstraintError)
-      response.json({
+      response.status(400).json({
         error: handleUniqueConstraintError(err),
         meta: err.meta,
       });

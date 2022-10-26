@@ -3,6 +3,7 @@ import { Product } from "@prisma/client";
 const newProductSchema = validator.object().shape({
   name: validator.string().required(),
   price: validator.number().required(),
+  categoryId: validator.number().required()
 }).noUnknown(true);
 
 const updateProductSchema = validator

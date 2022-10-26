@@ -447,15 +447,17 @@ components:
           example: record deleted
 
     sellSchema:
-      type: object
-      properties: 
-        productId:
-          type: integer
-          example: 1
-        quantity:
-          type: integer
-          minimum: 1
-          example: 7
+      type: array
+      items: 
+        type: object
+        properties: 
+          productId:
+            type: integer
+            example: 1
+          quantity:
+            type: integer
+            minimum: 1
+            example: 7
     soldProductSchema:
       type: object
       properties:

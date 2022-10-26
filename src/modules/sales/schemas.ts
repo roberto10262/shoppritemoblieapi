@@ -1,14 +1,16 @@
 import validator from "../../lib/validator";
 
-const sellSChema = validator
+const sellSchema = validator
   .object()
   .shape({
     productId: validator.number().required(),
     quantity: validator.number().required().min(1),
+    totalPrice: validator.number().required(),
   })
   .noUnknown(true);
 
-export { sellSChema };
+const salesSchema = validator.array().of(sellSchema).required();
+export { salesSchema, sellSchema};
 /*
 model Sales {
     id         Int      @id @default(autoincrement())
