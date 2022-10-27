@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { parseId } from "../utils/urlUtils";
-import { createStock } from "./create";
+
 import { createStockSchema, updateStockSchema } from "./schemas";
-import { updateStock } from "./update";
+
 import * as services from "./services";
 const createStockController = async (
   request: Request,
@@ -26,11 +26,12 @@ const updateStockController = async (
 ) => {
   const { id } = request.params;
   try {
+    console.log("controlla")
     const stock = await services.update_Stock(
       updateStockSchema.validateSync(request.body).availableQuantity,
       parseId(id)
     );
-    response.json(stock);
+    response.status(200).json(stock);
   } catch (error) {
     next(error);
   }

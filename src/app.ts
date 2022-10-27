@@ -27,6 +27,7 @@ const options: cors.CorsOptions = {
 };
 
 app.use(cors(options));
+app.use(express.static('public'))
 //Body Parser middleware
 app.use(express.json());
 
@@ -34,6 +35,9 @@ app.use(express.json());
 //  { response.send("<h2>Documentação em andamento").end()}
 // );
 //Api Routes
+app.get("/", (request:Request, response: Response)=>{
+  response.sendFile(__dirname + "/public/index.html")
+})
 app.use(api.productRouter);
 app.use(api.userRouter);
 app.use(api.stockRouter);

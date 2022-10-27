@@ -1,17 +1,16 @@
 import { PrismaClient } from "@prisma/client";
-import e from "express";
+import client from "../prismaclient";
 
-const prisma = new PrismaClient();
 
 const getAllSales = async () => {
-  const grouped = await prisma.sales.groupBy({
+  const grouped = await client.sales.groupBy({
     by: ["productId"],
     _sum: {
       totalPrice: true,
     },
     _count:{ id:true}
   });
-  const sales = await prisma.sales.findMany({
+  const sales = await client.sales.findMany({
     select: { productId: true, product: {select:{name:true, category:true}} },
   
   });
@@ -24,7 +23,7 @@ const getAllSales = async () => {
       ...sales.find((sale) => sale.productId === el.productId),
     };
   });
-console.log(result)
+
 
   return result
 };

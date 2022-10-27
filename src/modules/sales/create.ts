@@ -1,37 +1,42 @@
-import { PrismaClient, Prisma, Sales, Stock, Product } from "@prisma/client";
+import {
+  PrismaClient,
+  Prisma,
+  Sales,
+  Stock,
+  Product,
+  PrismaPromise,
+} from "@prisma/client";
 import { AppError } from "../../error/AppError";
 import { salesSchema, sellSchema } from "./schemas";
-
-const prisma = new PrismaClient();
+import client from "../prismaclient";
 
 const sellProduct = async (data: any) => {
   const validData = await salesSchema.validate(data, { abortEarly: false });
 
   if (!validData) return;
-  const products = await prisma.product.findMany({ include: { Stock: true } });
+  if (validData.length == 0)
+    throw new AppError("can't sell nothing, provide a product");
+
+  const products = await client.product.findMany({ include: { Stock: true } });
 
   const stock = checkStock(products, validData);
   if (!stock) return;
 
-  await prisma.sales.createMany({ data: validData });
-  return await prisma.stock.updateMany({ data: stock });
-  // const stock = await prisma.stock.findUnique({
-  //   where: { productId: validData.productId },
-  // });
-  // if (!stock || stock.availableQuantity <= validData.quantity)
-  //   throw new AppError("Insuficient or Unavailable Stock");
+  const updateStock = async (stock: Stock) => {
+    return await client.stock.update({
+      where: { id: stock.id },
+      data: { availableQuantity: stock.availableQuantity },
+    });
+  };
 
-  // const product = await prisma.product.findUniqueOrThrow({
-  //   where: { id: validData.productId },
-  // });
-  // await prisma.sales.create({
-  //   data: { ...validData, totalPrice: product.price * validData.quantity },
-  // });
+  const result = await Promise.all(stock.map((el) => updateStock(el)));
+  //console.log(result)
 
-  // return await prisma.stock.update({
-  //   where: { id: stock.id },
-  //   data: { availableQuantity: stock.availableQuantity - validData.quantity },
-  // });
+  const [sales] = await client.$transaction([
+    client.sales.createMany({ data: validData }),
+  ]);
+
+  return { sales };
 };
 
 export { sellProduct };
@@ -40,11 +45,13 @@ interface ProductWithStock extends Product {
   Stock: Stock | null;
 }
 
-const checkStock = (
-  products: ProductWithStock[],
-  data: { quantity: number; productId: number; totalPrice: number }[]
-) =>
-  data.map((el) => {
+interface Idata {
+  quantity: number;
+  productId: number;
+  totalPrice: number;
+}
+const checkStock = (products: ProductWithStock[], data: Idata[]) => {
+  return data.map((el) => {
     const result = products.find((product) => product.id === el.productId);
     if (
       !result ||
@@ -55,5 +62,7 @@ const checkStock = (
     return {
       id: result.Stock.id,
       availableQuantity: result.Stock.availableQuantity - el.quantity,
+      productId: result.Stock.productId,
     };
   });
+};

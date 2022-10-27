@@ -4,8 +4,7 @@ import { AppError } from "../../../error/AppError";
 import { validateData } from "../../../lib/validator";
 import { loginSchema } from "../schemas";
 import { checkPassword } from "../utils/passwordUtils";
-import { generateToken } from "./token";
-
+import client from "../../prismaclient"
 interface IloginCredentials {
   username: string;
   password: string;
@@ -18,9 +17,8 @@ const login = async (data: any) => {
   );
   if (!validData) return;
 
-  const prisma = new PrismaClient();
 
-  const exists = await prisma.user.findUnique({
+  const exists = await client.user.findUnique({
     where: { username: validData.username },
   });
 
